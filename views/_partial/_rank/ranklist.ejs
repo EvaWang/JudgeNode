@@ -62,13 +62,7 @@ table .motto .abbr {
 						<% if (rl[i].class === null || rl[i].class == 0) { %>
 							<td><%= __('Administrator') %></td>
 						<% } else { %>
-							<% if (rl[i].class <= 2) { %>
-								<td><%= rl[i].class %></td>
-							<% } else if (rl[i].class <= 4) { %>
-								<td><%= rl[i].class %></td>
-							<% } else { %>
-								<td><%= __('Strong') %></td>
-							<% } %>
+							<td><%= rl[i].class %></td>
 						<% } %>
 						<td><%- rl[i].slv %></td>
 						<td class='motto'>
