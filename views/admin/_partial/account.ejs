@@ -50,7 +50,8 @@
 				<% var acc = account_list[row]; %>
 			<tr>
 				<td><%- acc.uid %></td>
-				<td><%- acc.lgn %></td>
+				<td><a href='/user/<%- acc.uid %>' target="_blank" class='nav_a'><%- acc.lgn %></a></td>
+				<!-- <td><%- acc.lgn %></td> -->
 				<td colspan="4">
 <form id="form-<%- acc.uid %>" action="<%= site.url_for('admin/update/account/' + acc.uid) %>" method="post" class="pure-form pure-form-stacked">
     <fieldset>
