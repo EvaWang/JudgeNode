@@ -78,6 +78,7 @@ router.post('/problem', function(req, res, next) {
         if (!isadmin)
             return res.redirect(loginURL);
         dblink.admin.create_problem_content(config, function() {
+            dblink.admin.update_problem_condition(config);
             res.redirect(utils.url_for('admin/problems'));
         });
     });

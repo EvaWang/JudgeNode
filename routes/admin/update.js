@@ -32,7 +32,8 @@ router.post('/problem/:pid', function(req, res, next) {
         porder: req.body.porder,
         dependency: req.body.dependency.split(','),
         md: req.body.textbox,
-        solution_md: req.body.textbox2
+        solution_md: req.body.textbox2,
+        deadline: req.body.deadline
     };
     if (req.body.dependency.trim().length == 0)
         config.dependency = [];
@@ -46,6 +47,7 @@ router.post('/problem/:pid', function(req, res, next) {
             });
         });
 
+        dblink.admin.update_problem_condition(config);
     });
 });
 router.post('/contest/:cid', function(req, res, next) {
