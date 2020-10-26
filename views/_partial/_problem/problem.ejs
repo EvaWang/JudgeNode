@@ -49,6 +49,7 @@
 <% if (user["uid"] >= 0 && user["class"] == null) { %>
 	<li class="pure-menu-item"><a class="pure-menu-link" href='<%= site.url_for('statistic/grade/problem/' + cid + '/' + pid) %>'><%= __('Report') %></a></li>
 	<li class="pure-menu-item"><a class="pure-menu-link" href='<%= site.url_for('admin/edit/problem/' + pid) %>'><%= __('Edit') %></a></li>
+	<li class="pure-menu-item"><a class="pure-menu-link" href='<%= site.url_for('statistic/student/' + pid) %>'>批改</a></li>
 <% } %>
 </ul>
 

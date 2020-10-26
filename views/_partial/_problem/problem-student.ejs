@@ -1,0 +1,97 @@
+<div class="header">
+	<h1 class='article-title'>批改</h1>
+	<h2>Administrator</h2>
+</div>
+<style>
+	.account-table th:nth-child(n+3),
+	.account-table td:nth-child(n+3) {
+		padding: 0em;
+		width: 15%;
+	}
+
+	.overdue{
+		color: red;
+	}
+</style>
+<link href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<div class="content">
+	<div class="pure-g">
+		<div class="pure-u-1-3"> Problem: <strong>#<%- prob_config.config.pid %>:<%- prob_config.config.ttl %></strong></div>
+		<div class="pure-u-1-3"> DEADLINE: <strong><%- prob_config.config.deadline %></strong></div>
+		<div class="pure-u-1-3"> TODO: by class</div>
+		<div class="pure-u-1-2">
+			<table id="account-table" 
+			class="pure-table pure-table-bordered" 
+			data-page-list="[10, 25, All]"
+			data-pagination="true">
+				<thead>
+				  <tr>
+					<th data-field="uid" >#</th>
+					<th data-field="lgn" data-formatter="lgnLinkFormatter">學號</th>
+					<th data-field="class" >班別</th>
+				  </tr>
+				</thead>
+			</table>
+		</div>
+		<div class="pure-u-1-2">
+			<table id="table" class="pure-table pure-table-bordered">
+				<thead>
+				  <tr>
+					<th data-field="res" data-formatter="statusFormatter">Verdict</th>
+					<th data-field="lgn" data-formatter="srcLinkFormatter">Source</th>
+					<th data-field="ts" data-formatter="dateFormatter">Date</th>
+				  </tr>
+				</thead>
+			  </table>
+		</div>
+	</div>
+</div>
+
+<script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
+<script>
+	function dateFormatter(value){
+		var timeStr = new Date(value).toLocaleString();
+		var isOverDue = new Date(value) > new Date('<%- prob_config.config.deadline %>') ? "overdue": "";
+		return '<label class="'+isOverDue+'">'+timeStr+'</label>'
+	};
+
+	const result_message = ['Waiting', 'CE', 'OLE', 'MLE', 'RE', 'TLE', 'WA', 'AC', 'Uploading...', 'Presentation Error'];
+	const result_message_color = ['black', 'red', 'red', 'red', 'blue', 'red', 'red', 'green', 'black', 'red'];
+	function statusFormatter(value){
+		return '<label style="font-weight: bold;color:'+result_message_color[value]+'">'+result_message[value]+'</label>'
+	}
+
+	function srcLinkFormatter(value, row){
+		return 	'<a href="/source/highlight/'+row.uid+'" target = "_blank">code</a>'+
+				'<a class="pid-rejudge" onclick="rejudge(<%-prob_config.config.pid%>, '+row.sid+')" style="color: #b6c17b;" title="rejudge"><i class="fa fa-refresh"></i></a>'
+	}
+
+	function rejudge(pid, sid){
+		$.get("/admin/api/rejudge?pid="+pid+"&sid="+sid, function (data) {
+			console.log(data);
+		});
+	}
+
+	function load_data(uid){
+		var $table = $('#table')
+		$table.bootstrapTable('showLoading')
+		$.get("/api/submissions?pid=<%- prob_config.config.pid %>&uid="+uid, function (data) {
+			$table.bootstrapTable('load', data)
+			$table.bootstrapTable('hideLoading')
+		});
+	}
+
+	function lgnLinkFormatter(value, row){
+		return '<a onclick="load_data('+row.uid+')" target="_blank" class="nav_a" style="color: blue;">'+value+'</a>'
+	}
+
+	$(document).ready(function () {
+		var $table = $('#table')
+		$table.bootstrapTable()
+
+		var $accountTable = $("#account-table");
+		accountList = <%- JSON.stringify(account_list) %>;
+		$accountTable.bootstrapTable({data: accountList})
+	});
+</script>

@@ -361,6 +361,31 @@ router.get('/statistic/grade/problem/:cid/:pid', function(req, res, next) {
     });
 });
 
+router.get("/statistic/student/:pid", function(req, res, next){
+    var pid = req.params.pid,
+        uid = req.session.uid;
+
+    var loadPage = function() {
+        dblink.admin.load_accountlist(function(account_list) {
+            dblink.admin.load_problem_content(pid, function(prob_config){
+                res.render('layout', {
+                    layout: 'problem_student',
+                    subtitle: 'Grading by student',
+                    user: req.session,
+                    account_list: account_list,
+                    prob_config: prob_config
+                });
+            });
+        });
+    };
+
+    dblink.helper.isAdmin(uid, function(isadmin) {
+        if (!isadmin)
+            return res.redirect(utils.url_for('login'));
+        loadPage();
+    });
+});
+
 router.get('/contests?', function(req, res, next) {
     dblink.contest.list(req.query, req.session.uid, function(clist) {
         dblink.contest.listsize(req.query, req.session.uid, function(csize) {
